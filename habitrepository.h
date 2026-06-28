@@ -15,6 +15,7 @@ public:
     static QVector<QPair<int,QString>> getHabits(int userId);
     static bool markDone(int habitId);
     static bool deleteHabit(int habitId);
+    static int getStreak(int habitId);
 };
 
 #endif

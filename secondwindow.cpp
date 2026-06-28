@@ -23,11 +23,17 @@ void SecondWindow::loadHabits()
     }
     QVector<QPair<int,QString>>v;
     v=HabitRepository::getHabits(SessionManager::instance().userid());
-    for(auto it:v)
-    {   QLabel *habitLabel=new QLabel(this);
-        habitLabel->setText(it.second);
-        habitLabel->setStyleSheet("font-size: 16px; padding: 5px;");
-        ui->habitsLayout->addWidget(habitLabel);
+    for (const auto& it : std::as_const(v)) {
+        HabitCard* card = new HabitCard(it.first, it.second,
+                                        HabitRepository::getStreak(it.first),
+                                        this);
+        // Connect delete signal so SecondWindow knows to refresh
+        connect(card, &HabitCard::deleteRequested,
+                this, [this](int habitId) {
+                    HabitRepository::deleteHabit(habitId);
+                    loadHabits();
+                });
+        ui->habitsLayout->addWidget(card);  // ← actually add it to the layout
     }
 
 }

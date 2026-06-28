@@ -5,6 +5,7 @@
 #include <QDialog>
 #include"habitrepository.h"
 #include"SessionManager.h"
+#include"habitcard.h"
 namespace Ui {
 class SecondWindow;
 }
@@ -24,9 +25,7 @@ private slots:
 
     void on_lineEdit_editingFinished();
 
-    void on_pushButton_clicked();
 
-    void on_SeeHabits_clicked(bool checked);
 
 private:
     void loadHabits();

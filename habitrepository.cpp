@@ -2,6 +2,7 @@
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QDebug>
+#include <qdatetime.h>
 
 bool HabitRepository::addHabit(int userId, const QString& name) {
     // Always create QSqlQuery inside the function.
@@ -91,4 +92,27 @@ bool HabitRepository::deleteHabit(int habitId) {
     }
 
     return true;
+}
+int HabitRepository::getStreak(int habitId) {
+    QSqlQuery q;
+    q.prepare(
+        "SELECT date(logged_at) FROM habit_logs "
+        "WHERE habit_id = ? "
+        "ORDER BY logged_at DESC"
+        );
+    q.addBindValue(habitId);;
+    q.exec();
+
+    int streak = 0;
+    QDate expected = QDate::currentDate();
+    while (q.next()) {
+        QDate logged = QDate::fromString(q.value(0).toString(), "yyyy-MM-dd");
+        if (logged == expected) {
+            streak++;
+            expected = expected.addDays(-1);
+        } else {
+            break;
+        }
+    }
+    return streak;
 }
